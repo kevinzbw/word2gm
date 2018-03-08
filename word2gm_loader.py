@@ -262,10 +262,10 @@ class Word2GM(object):
         return -np.min(metric_grid)
 
     def disdot(self, w1, w2):
-    	num_mix = self.num_mixtures
-    	mu1 = self.mus[w1]
-    	mu2 = self.mus[w2]
-    	sigma1 = np.exp(self.logsigs[w1])
+        num_mix = self.num_mixtures
+        mu1 = self.mus[w1]
+        mu2 = self.mus[w2]
+        sigma1 = np.exp(self.logsigs[w1])
         sigma2 = np.exp(self.logsigs[w2])
         mix1 = self.mixture[w1]
         mix2 = self.mixture[w2]
@@ -375,7 +375,7 @@ class Word2GM(object):
                 init.run()
                 saver = tf.train.Saver()
                 saver.save(session, os.path.join(emb_logdir, "model.ckpt"), 0)
-                summary_writer = tf.train.SummaryWriter(emb_logdir)
+                summary_writer = tf.summary.FileWriter(emb_logdir)
                 config = projector.ProjectorConfig()
                 embedding = config.embeddings.add()
                 embedding.tensor_name = embedding_var.name
