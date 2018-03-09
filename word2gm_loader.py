@@ -153,14 +153,14 @@ class Word2GM(object):
                     + geom_text(size=10)
                     + ggtitle("Neighbors of [{}:{}] with mixture probability {:.4g}".format(self.id2word[idx], cl, mix))
                     )
-            print plot
-        print 'Top 10 highest similarity'
-        print words[:10]
-        if verbose: print dist_val[:10]
-        print 'Top 10 lowest variance of top {} highest similarity'.format(num_nns)
+            print (plot)
+        print ('Top 10 highest similarity')
+        print (words[:10])
+        if verbose: print (dist_val[:10])
+        print ('Top 10 lowest variance of top {} highest similarity'.format(num_nns))
         low_var_idxs, var_val = self.sort_low_var(highsim_idxs)
-        print self.idxs2words(low_var_idxs)
-        if verbose: print var_val
+        print (self.idxs2words(low_var_idxs))
+        if verbose: print (var_val)
 
     def words_to_idxs(self, word_list, discard_unk=False, verbose=False):
         assert isinstance(word_list, list), 'Expected a list'
@@ -179,7 +179,7 @@ class Word2GM(object):
         if word in self.word2id:
             return self.word2id[word]
         else:
-            if verbose: print 'Unknown word [{}]'.format(word)
+            if verbose: print ('Unknown word [{}]'.format(word))
             return 0
     #### 
     def dot(self, idx1, cl1, idx2, cl2):
@@ -191,7 +191,8 @@ class Word2GM(object):
         for cl1 in range(self.num_mixtures):
             for cl2 in range(self.num_mixtures):
                 metric_grid[cl1, cl2] = self.dot(idx1, cl1, idx2, cl2)
-                if verbose: print metric_grid
+                if verbose:
+                    print (metric_grid)
         return np.max(metric_grid)
 
     def avedot(self, idx1, idx2, verbose=False):
@@ -199,7 +200,8 @@ class Word2GM(object):
         for cl1 in range(self.num_mixtures):
             for cl2 in range(self.num_mixtures):
                 metric_grid[cl1, cl2] = self.dot(idx1, cl1, idx2, cl2)
-                if verbose: print metric_grid
+                if verbose:
+                    print (metric_grid)
         return np.mean(metric_grid)
 
     def negkl(self, w1, cl1, w2, cl2):
@@ -218,7 +220,7 @@ class Word2GM(object):
 
         sph = (len(logsig1) == 1)
 
-        #print 'D = {} Spherical = {}'.format(D, sph)
+        #print ('D = {} Spherical = {}'.format(D, sph))
 
         diff = m1 - m2
         exp_term = np.sum(diff*s2_inv*diff)
@@ -242,7 +244,8 @@ class Word2GM(object):
         for cl1 in range(self.num_mixtures):
             for cl2 in range(self.num_mixtures):
                 metric_grid[cl1, cl2] = self.negkl(idx1, cl1, idx2, cl2)
-                if verbose: print metric_grid
+                if verbose:
+                    print (metric_grid)
         return np.max(metric_grid)
 
 
@@ -258,7 +261,8 @@ class Word2GM(object):
         for cl1 in range(self.num_mixtures):
             for cl2 in range(self.num_mixtures):
                 metric_grid[cl1, cl2] = self.norm(idx1, cl1, idx2, cl2)
-                if verbose: print metric_grid
+                if verbose:
+                    print (metric_grid)
         return -np.min(metric_grid)
 
     def disdot(self, w1, w2):
@@ -287,7 +291,7 @@ class Word2GM(object):
     
         # for numerical stability
         max_partial_energy = np.max(partial_energies)
-        #print 'max partial (log) energy', max_partial_energy
+        #print ('max partial (log) energy', max_partial_energy)
         energy = 0
         for _i in range(num_mix):
             for _j in range(num_mix):
@@ -312,13 +316,13 @@ class Word2GM(object):
             elif criterion == 'mean_of_max':
                 max_scores = np.max(all_scores, axis=1)
                 if verbose:
-                    print 'max scores', max_scores
+                    print ('max scores', max_scores)
                 assert len(max_scores) == len(context)
                 scores[i] = np.mean(max_scores)
 
             if verbose:
-                print 'Mixture ', i 
-                print 'all scores = {} with aggregate score = {}'.format(all_scores, scores[i])
+                print ('Mixture ', i )
+                print ('all scores = {} with aggregate score = {}'.format(all_scores, scores[i]))
         cl_max = np.argmax(scores)
         return cl_max
 
@@ -334,7 +338,7 @@ class Word2GM(object):
             return 1.0
 
         if metric == 'dot_context':
-            if verbose: print 'Using dot context'
+            if verbose: print ('Using dot context')
             c1 = self.words_to_idxs(c1, discard_unk=True)
             c2 = self.words_to_idxs(c2, discard_unk=True)
             cl1 = self.find_best_cluster(w1, c1, criterion=criterion, verbose=verbose)
@@ -342,11 +346,11 @@ class Word2GM(object):
             score = self.dot(w1, cl1, w2, cl2)
             return score
         elif metric == 'maxdot':
-            if verbose: print 'Using maxdot'
+            if verbose: print ('Using maxdot')
             score = self.maxdot(w1, w2, verbose=verbose)
             return score
         elif metric == 'avedot':
-            if verbose: print 'Using avedot'
+            if verbose: print ('Using avedot')
             score = self.avedot(w1, w2, verbose=verbose)
 
     def visualize_embeddings(self, port=6006, call_tensorboard=False):
@@ -364,7 +368,7 @@ class Word2GM(object):
         if not os.path.exists(emb_logdir):
             os.makedirs(emb_logdir)
         else:
-            print 'The directory already exists!'
+            print ('The directory already exists!')
         thefile = open(emb_logdir + '/labels.csv', 'w')
         for item in labels:
             thefile.write("%s\n" % item)
